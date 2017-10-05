@@ -24,3 +24,19 @@
 img.no-margin {
   margin: 0 !important;
 }
+
+/* Changes styling */
+p.changes,
+span.changes {
+  color:red;
+}
+
+
+/* Custom fragment animations */
+.fragment.hidden {
+  display: none !important;
+}
+
+.fragment.hidden.visible {
+  display: inline !important;
+}

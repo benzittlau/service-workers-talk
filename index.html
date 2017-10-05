@@ -114,15 +114,115 @@
             </aside>
           </section>
           <section>
-            <h3>A slide talking about why I think change detection is cool.</h3>
-            <p>Hard problem to make web apps fast</p>
-            <p>Solved in very different ways, and those decisions drive the frameworks on top of them</p>
+            <h3>So why should we care about change detection?</h3>
+            <p>DOM changes are slow, so it's hard to make an app fast</p>
+            <p>Different approaches used by the different frameworks</p>
+            <p>No "right" answer</p>
+            <aside class="notes">
+              I personally find the different ways in which frameworks handle
+              the challenges of change detection of DOM mutation incredibly
+              interesting.  Making a web application "feel" fast is very hard
+              (as anyone who's attempted to make an interactive application without
+              the modern tools can likely attest).
+
+              Each framework has taken a different approach, and neither of these
+              approaches has "won".  As the frameworks are converging towards similar
+              concepts in terms of components and data and action flows, their change
+              detection and update approaches have remained very different.
+
+              How the framework handles these questions has direct impact on how the
+              user of the framework has to work, so understanding these differences
+              gives a better appreciation for the usage differences between the
+              frameworks.
+            </aside>
           </section>
           <section>
-            <h2>Quick description of React change detection</h2>
+            <h2>React Change Detection (Virtual DOM)</h2>
+            <div class="flex-container">
+              <div class="flex-column">
+                <p>Data/Model/State</p>
+                <pre><code data-trim data-noescape class='json'>
+{
+  heroes: [
+    'Hiro Nakamura',
+    'Claire Bennet',
+    'Peter Petrelli',<span data-fragment-index="1" class="fragment hidden changes">
+    'Matt Parkman'</span>
+  ]
+}
+</code></pre>
+              </div>
+              <div class="flex-column">
+                <p class="fragment highlight-red" data-fragment-index="2">Template</p>
+<pre><code data-trim class='html'>
+<ul>
+  <% for hero in heroes %>
+    <li><% hero %></li>
+  <% end %>
+</ul>
+</code></pre>
+              </div>
+              <div class="fragment hidden flex-column" data-fragment-index="3">
+                <p class="changes">Virtual DOM</p>
+<pre><code data-trim class='html'>
+<ul>
+  <li>Hiro Nakamura</li>
+  <li>Claire Bennet</li>
+  <li>Peter Petrelli</li>
+  <li>Matt Parkman</li>
+</ul>
+</code></pre>
+              </div>
+              <div class="flex-column">
+                <p>DOM</p>
+<pre><code data-trim class='html'>
+<ul>
+  <li>Hiro Nakamura</li>
+  <li>Claire Bennet</li>
+  <li>Peter Petrelli</li>
+</ul>
+</code></pre>
+              </div>
+            </div>
           </section>
           <section>
-            <h2>Quick description of Vue(/Ember) change detection</h2>
+            <h2>Ember/Vue Change Detection (Observables)</h2>
+            <div class="flex-container">
+              <div class="flex-column">
+                <p>Data/Model/State</p>
+                <pre><code data-trim data-noescape class='json'>
+{
+  <span data-fragment-index="1" class="fragment highlight-red">heroes:</span> [
+    'Hiro Nakamura',
+    'Claire Bennet',
+    'Peter Petrelli',<span data-fragment-index="2" class="fragment hidden changes">
+    'Matt Parkman'</span>
+  ]
+}
+</code></pre>
+              </div>
+              <div class="flex-column">
+                <p>Template</p>
+<pre><code data-trim data-noescape class='json'>
+
+&lt;ul&gt;
+  &lt;% for hero in <span data-fragment-index="1" class="fragment highlight-red">heroes</span> %&gt;
+    &lt;li&gt;&lt;% hero %&gt;&lt;/li&gt;
+  &lt;% end %&gt;
+&lt;/ul&gt;
+</code></pre>
+              </div>
+              <div class="flex-column">
+                <p>DOM</p>
+<pre><code data-trim data-noescape class='html'>
+&lt;ul&gt;
+  <span data-fragment-index="1" class="fragment highlight-red">&lt;li&gt;Hiro Nakamura&lt;/li&gt;
+  &lt;li&gt;Claire Bennet&lt;/li&gt;
+  &lt;li&gt;Peter Petrelli&lt;/li&gt;</span>
+&lt;/ul&gt;
+</code></pre>
+              </div>
+            </div>
           </section>
           <section>
             <h2>Quick description of Angular change detection</h2>
