@@ -111,6 +111,10 @@
               Change detection is the first part of that process; allowing the
               framework to be aware that changes have occurred, so they can handle
               those changes appropriately.
+
+              We won't be looking at how those actual updates are applied in this talk,
+              if you're interested in that please see my talk from last year on
+              Virtual DOM.
             </aside>
           </section>
           <section>
@@ -137,7 +141,7 @@
             </aside>
           </section>
           <section>
-            <h2>React Change Detection (Virtual DOM)</h2>
+            <h3>React Change Detection (Virtual DOM)</h3>
             <div class="flex-container">
               <div class="flex-column">
                 <p>Data/Model/State</p>
@@ -186,7 +190,7 @@
             </div>
           </section>
           <section>
-            <h2>Ember/Vue Change Detection (Observables)</h2>
+            <h3>Ember/Vue Change Detection (Observables)</h3>
             <div class="flex-container">
               <div class="flex-column">
                 <p>Data/Model/State</p>
@@ -225,7 +229,7 @@
             </div>
           </section>
           <section>
-            <h2>Angular Change Detection (Compare States)</h2>
+            <h3>Angular Change Detection (Compare States)</h3>
             <div class="flex-container">
               <div class="flex-column">
                 <p>Data/Model/State</p>
@@ -275,14 +279,29 @@
               </div>
             </div>
           </section>
+          <section>
+            <h3>To summarize...</h3>
+            <p data-fragment-index="1" class="fragment">Change detection is how frameworks know they need to update the view</p>
+            <p data-fragment-index="2" class="fragment">Each framework uses a different strategy</p>
+            <p data-fragment-index="3" class="fragment">Angular's strategy is to check each components state each "tick" to see if it's changed</p>
+          </section>
         </section>
         <section>
           <section>
             <h3>But how do you make it fast?</h3>
           </section>
           <section>
-            <h2>Show the general change detector, liked used in Angular.js</h2>
-            <p>Talk about how it could be passed all kinds of objects</p>
+              <div><img src="img/angular_change_detector_tree.png" alt="Vue JS Trends"></div>
+              <div class="source"><a href="https://blog.thoughtram.io/angular/2016/02/22/angular-2-change-detection-explained.html">Source</a></div>
+              <aside class="notes">
+                While this may seem pretty fast when you're only looking at a single component,
+                applications will often be made up of many, many components in a tree structure
+                like that shown here.  Each of those components must check it's own data
+                to see if it's changed (this isn't strictly true in Angular, but is true by
+                default).
+
+                Because this needs to happen every cycle, we need it to be incredibly fast.
+              </aside>
           </section>
           <section>
             <h2>Show a specific change detector</h2>

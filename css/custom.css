@@ -19,6 +19,9 @@
 img.no-margin {
   margin: 0 !important; }
 
+.source {
+  text-align: right; }
+
 /* Changes styling */
 p.changes,
 span.changes {
