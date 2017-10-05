@@ -44,10 +44,10 @@
         <section>
           <h2>Angular Change Detection and the VM: BFF's</h1>
           <div class="flex-container">
-            <div class="flex-half">
+            <div class="flex-column">
               <img src="img/bens_face.png" />
             </div>
-            <div class="flex-half">
+            <div class="flex-column">
               <h3>Ben Zittlau</h2>
               <p>@benzittlau</p>
               <p>benzittlau.com</p>
@@ -57,29 +57,92 @@
           </div>
         </section>
         <section>
+          <h3>SLIDE ON WHAT WILL BE COVERED</h3>
+        </section>
+        <section>
           <section>
-            <h3>When</h3>
+            <h3>What is change detection?</h3>
           </section>
           <section>
-            <h2>A timeline of nearly everything</h2>
-            <ul class="list--no-bullets">
-              <li><a href="https://en.wikipedia.org/wiki/Jesus">0 - Jesus is born</a></li>
-              <li><a href="http://misko.hevery.com/2009/09/28/hello-world-angular-is-here/">Sept 2009 - Angular is announced</a></li>
-              <li><a href="http://www.h-online.com/open/news/item/SproutCore-2-0-becomes-Ember-js-1394362.html">Dec 2011 - SproutCore 2.0 becomes Ember.js</a></li>
-              <li><a href="https://github.com/facebook/react/blob/master/CHANGELOG.md#0120-october-28-2014">May 2013 - React 0.3.0 is open sourced</a></li>
-              <li class="fragment grow"><a href="http://blog.evanyou.me/2014/02/11/first-week-of-launching-an-oss-project/">Feb 2014 - Vue.js is released</a></li>
-              <li><a href="https://www.youtube.com/watch?v=gNmWybAyBHI">Oct 2014 - Angular 2 is announced</a></li>
-              <li><a href="https://emberjs.com/blog/2015/08/13/ember-2-0-released.html">Aug 2015 - Ember 2.0 is released</a></li>
-              <li><a href="https://github.com/facebook/react/blob/master/CHANGELOG.md#1500-april-7-2016">April 2016 - React 15 released</a></li>
-              <li class="fragment grow"><a href="https://vuejs.org/2016/04/27/announcing-2.0/">April 2016 - Vue.js 2 is released</a></li>
-              <li><a href="https://github.com/angular/angular.io/pull/2402">Sept 2016 - Angular 2 stable release</a></li>
-              <li><a href="https://techcrunch.com/2017/04/18/facebook-announces-react-fiber-a-rewrite-of-its-react-framework/">April 2017 - React Fibre released</a></li>
-            </ul>
+            <div class="flex-container">
+              <div class="flex-column">
+                <p>Data/Model/State</p>
+                <pre><code data-trim class='json'>
+{
+  heroes: [
+    'Hiro Nakamura',
+    'Claire Bennet',
+    'Peter Petrelli'
+  ]
+}
+</code></pre>
+              </div>
+              <div class="flex-column">
+                <p>Template</p>
+<pre><code data-trim class='html'>
+<ul>
+  <% for hero in heroes %>
+    <li><% hero %></li>
+  <% end %>
+</ul>
+</code></pre>
+              </div>
+              <div class="flex-column">
+                <p>DOM</p>
+<pre><code data-trim class='html'>
+<ul>
+  <li>Hiro Nakamura</li>
+  <li>Claire Bennet</li>
+  <li>Peter Petrelli</li>
+</ul>
+</code></pre>
+              </div>
+            </div>
+            <aside class="notes">
+              One of the major roles modern javascript frameworks serve
+              is to allow you to combine data with a template to create
+              a DOM structure.
+
+              There was a time when it might have been useful simply to
+              do this once, but modern javascript apps often have changing
+              data and state, and it is necessary to make sure the interface
+              reflects any changes to that data.
+
+              Change detection is the first part of that process; allowing the
+              framework to be aware that changes have occurred, so they can handle
+              those changes appropriately.
+            </aside>
           </section>
           <section>
-            <h2>Heating Up</h2>
-            <img src="img/vue_js_trends.png" alt="Vue JS Trends">
+            <h3>A slide talking about why I think change detection is cool.</h3>
+            <p>Hard problem to make web apps fast</p>
+            <p>Solved in very different ways, and those decisions drive the frameworks on top of them</p>
           </section>
+          <section>
+            <h2>Quick description of React change detection</h2>
+          </section>
+          <section>
+            <h2>Quick description of Vue(/Ember) change detection</h2>
+          </section>
+          <section>
+            <h2>Quick description of Angular change detection</h2>
+          </section>
+        </section>
+        <section>
+          <section>
+            <h3>But how do you make it fast?</h3>
+          </section>
+          <section>
+            <h2>Show the general change detector, liked used in Angular.js</h2>
+            <p>Talk about how it could be passed all kinds of objects</p>
+          </section>
+          <section>
+            <h2>Show a specific change detector</h2>
+            <p>Talk about how it will always get the same shape of object</p>
+            <p>Hand-wave about why "monomorphic" is good.</p>
+          </section>
+        </section>
+
           <section>
             <h2>To Contrast</h2>
             <div class="flex-container">
@@ -471,8 +534,8 @@ const app = new Vue({
         progress: true,
         history: true,
         center: true,
-        margin: 0.2,
-        height: 900,
+        margin: 0.1,
+        width: '100%',
         maxScale: 1,
 
         transition: 'slide', // none/fade/slide/convex/concave/zoom

@@ -7,6 +7,9 @@
 .flex-half {
   flex-basis: 50%; }
 
+.flex-column {
+  flex: 1; }
+
 .reveal ul.list--no-bullets {
   list-style: none; }
 
