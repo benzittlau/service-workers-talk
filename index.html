@@ -304,9 +304,93 @@
               </aside>
           </section>
           <section>
-            <h2>Show a specific change detector</h2>
-            <p>Talk about how it will always get the same shape of object</p>
-            <p>Hand-wave about why "monomorphic" is good.</p>
+            <h3>A basic Angular component</h3>
+<pre><code data-trim class='js'>
+@Component({
+  selector: 'article-heading',
+  template: `
+    <div>
+      <h2>{{article.title}}</h2>
+      <p>By: {{article.author}}</p>
+    </div>
+  `
+})
+export class ArticleHeading {
+  @Input() article: Article;
+}
+</code></pre>
+            <aside class="notes">
+              This basic component to display a heading for an article
+              would be passed an input "Article".  This components
+              change detector will need to determine if that article
+              has changed each tick of the application.
+            </aside>
+          </section>
+          <section>
+            <h3>A conceptual Angular.js change detector</h3>
+<pre><code data-trim class='js'>
+while (op) {
+  var getter = getterFor(op.fieldName);
+
+  var oldValue = op.value;
+  var newValue = getter(op.context);
+
+  if (oldValue !== newValue) {
+    op.value = newValue;
+
+    var fn = reactionFunctionFor(op);
+    fn(oldValue, newValue);
+  }
+
+  op = op.next;
+}
+</code></pre>
+            <div class="source"><a href="https://www.youtube.com/watch?v=jvKGQSFQf10">Source</a></div>
+            <aside class="notes">
+              This is representation of the angularjs change detector by Victor Savkin.
+              The most important thing to note is that this is a generic change detector,
+              it is used to check every binding in the application.  This is very DRY,
+              reusing the same code for every component. But... with Javascript that has issues...
+
+              The op object could look very different each time it's called.
+            </aside>
+          </section>
+          <section>
+            <h3>A conceptual Angular change detector</h3>
+<pre><code data-trim class='html'>
+<p>By: {{article.author}}</p>
+</code></pre>
+<pre><code data-trim class='js'>
+var author = obj.author;
+if (author !== this.previousAuthor) {
+  this.previousAuthor = author;
+  this.authorBinding.string = author;
+}
+</code></pre>
+            <div class="source"><a href="https://www.youtube.com/watch?v=jvKGQSFQf10">Source</a></div>
+            <aside class="notes">
+              Notice that this change detector is written specifically to our context. Because
+              this change detector is written specifically for this specific component, it will
+              always see the same "shapes" of objects.  I.e. obj will always have a title
+              and author attribute.
+
+              This is the fundamental idea of a monomorphic function, that the objects that it
+              works on always have the same shape.
+            </aside>
+          </section>
+          <section>
+            <h2>Hey, wait a minute... What is a shape?</h2>
+            <h2 class="fragment">That sounds an awful lot like a class...</h2>
+          </section>
+          <section>
+            <h2>Ignore the man behind the curtain for now...</h2>
+            <blockquote cite="http://blog.mgechev.com/2016/08/14/ahead-of-time-compilation-angular-offline-precompilation/">This allows the JavaScript virtual machine to perform property access caching and execute the change detection/rendering logic much faster. - Minko Gechev</blockquote>
+          </section>
+          <section>
+            <h3>Where does the per-component change detector come from?</h3>
+            <p>The code you write isn't the code that runs</p>
+            <p>Angular has a JIT and AOT compiler that generates code, including change detectors</p>
+            <aside class="notes"></aside>
           </section>
         </section>
 
