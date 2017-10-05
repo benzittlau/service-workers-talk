@@ -225,7 +225,55 @@
             </div>
           </section>
           <section>
-            <h2>Quick description of Angular change detection</h2>
+            <h2>Angular Change Detection (Compare States)</h2>
+            <div class="flex-container">
+              <div class="flex-column">
+                <p>Data/Model/State</p>
+<pre><code data-trim data-noescape class='json'>
+{
+  heroes: [
+    'Hiro Nakamura',
+    'Claire Bennet',
+    'Peter Petrelli',
+  ]
+}
+</code></pre>
+              </div>
+              <div data-fragment-index="1" class="fragment hidden flex-column">
+                <p class="changes">Next State</p>
+<pre><code data-trim data-noescape class='json'>
+  {
+    heroes: [
+      'Hiro Nakamura',
+      'Claire Bennet',
+      'Peter Petrelli',<span class="changes">
+      'Matt Parkman'</span>
+    ]
+  }
+</code></pre>
+              </div>
+              <div class="flex-column">
+                <p>Template</p>
+<pre><code data-trim class='html'>
+<ul>
+  <% for hero in heroes %>
+    <li><% hero %></li>
+  <% end %>
+</ul>
+</code></pre>
+              </div>
+              <div class="flex-column">
+                <p>Virtual DOM</p>
+<pre><code data-trim class='html'>
+<ul>
+  <li>Hiro Nakamura</li>
+  <li>Claire Bennet</li>
+  <li>Peter Petrelli</li>
+  <li>Matt Parkman</li>
+</ul>
+</code></pre>
+              </div>
+            </div>
           </section>
         </section>
         <section>
