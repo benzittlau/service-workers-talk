@@ -57,7 +57,15 @@
           </div>
         </section>
         <section>
-          <h3>SLIDE ON WHAT WILL BE COVERED</h3>
+          <h3>We will cover</h3>
+          <p>What change detection is</p>
+          <p>How it's handled in React, Vue and Ember</p>
+          <p>How it's handled in Angular</p>
+          <p>How Angular atttempts to make this fast through monomorphism</p>
+          <p>How the Angular compiler is part of that stragety</p>
+          <h2>If Time:</h2>
+          <p>Why monomorphism makes javascript faster (Inline Cache)</p>
+          <p>What object shapes are in Javascript</p>
         </section>
         <section>
           <section>
@@ -101,16 +109,16 @@
             <aside class="notes">
               One of the major roles modern javascript frameworks serve
               is to allow you to combine data with a template to create
-              a DOM structure.
+              a DOM structure.<br/><br/>
 
               There was a time when it might have been useful simply to
               do this once, but modern javascript apps often have changing
               data and state, and it is necessary to make sure the interface
-              reflects any changes to that data.
+              reflects any changes to that data.<br/><br/>
 
               Change detection is the first part of that process; allowing the
               framework to be aware that changes have occurred, so they can handle
-              those changes appropriately.
+              those changes appropriately.<br/><br/>
 
               We won't be looking at how those actual updates are applied in this talk,
               if you're interested in that please see my talk from last year on
@@ -127,12 +135,12 @@
               the challenges of change detection of DOM mutation incredibly
               interesting.  Making a web application "feel" fast is very hard
               (as anyone who's attempted to make an interactive application without
-              the modern tools can likely attest).
+              the modern tools can likely attest).<br/><br/>
 
               Each framework has taken a different approach, and neither of these
               approaches has "won".  As the frameworks are converging towards similar
               concepts in terms of components and data and action flows, their change
-              detection and update approaches have remained very different.
+              detection and update approaches have remained very different.<br/><br/>
 
               How the framework handles these questions has direct impact on how the
               user of the framework has to work, so understanding these differences
@@ -291,6 +299,11 @@
             <h3>But how do you make it fast?</h3>
           </section>
           <section>
+            <h3>Change Detection Time = C * N</h3>
+            <p>C - time to check a binding</p>
+            <p>N - number of bindings</p>
+          </section>
+          <section>
               <div><img src="img/angular_change_detector_tree.png" alt="Vue JS Trends"></div>
               <div class="source"><a href="https://blog.thoughtram.io/angular/2016/02/22/angular-2-change-detection-explained.html">Source</a></div>
               <aside class="notes">
@@ -298,7 +311,7 @@
                 applications will often be made up of many, many components in a tree structure
                 like that shown here.  Each of those components must check it's own data
                 to see if it's changed (this isn't strictly true in Angular, but is true by
-                default).
+                default).<br/><br/>
 
                 Because this needs to happen every cycle, we need it to be incredibly fast.
               </aside>
@@ -350,7 +363,7 @@ while (op) {
               This is representation of the angularjs change detector by Victor Savkin.
               The most important thing to note is that this is a generic change detector,
               it is used to check every binding in the application.  This is very DRY,
-              reusing the same code for every component. But... with Javascript that has issues...
+              reusing the same code for every component. But... with Javascript that has issues...<br/><br/>
 
               The op object could look very different each time it's called.
             </aside>
@@ -389,30 +402,61 @@ if (author !== this.previousAuthor) {
           <section>
             <h3>Where does the per-component change detector come from?</h3>
             <p>The code you write isn't the code that runs</p>
-            <p>Angular has a JIT and AOT compiler that generates code, including change detectors</p>
-            <aside class="notes"></aside>
+            <p>Angular has a JIT and AOT compiler that generates code, including these change detectors</p>
+            <aside class="notes">
+              Having a compilation step comes at a cost.  If you are using the Just In Time compiler
+              the angular library will be larger, and your boot time will be slower while it runs the
+              compiler.  This is why in Angular 2 they introduced the ability to do Ahead Of Time
+              compilation.  Given that most applications now will have a build step before
+              being deployed this will be fairly straightforward to implement in most cases, and
+              will avoid the additional payload size and compile time.
+            </aside>
+          </section>
+        </section>
+        <section>
+          <section>
+            <h2>Why are monomorphic functions faster?</h2>
+          </section>
+          <section>
+            <img src="img/object_a.png" />
+          </section>
+          <section>
+            <h2>Why are object shapes?</h2>
+          </section>
+          <section>
+<pre><code data-trim class='js'>
+function Point(x,y) {
+  this.x = x;
+  this.y = y;
+}
+
+var obj = new Point(1,2);
+</code></pre>
+            <img src="img/hidden_classes.png" />
+            <div class="source"><a href="http://richardartoul.github.io/jekyll/update/2015/04/26/hidden-classes.html">Source</a></div>
+
           </section>
         </section>
 
-          <section>
-            <blockquote>At the end of the day I liked it a lot, and could see it becoming an easy to use "go to" for side projects</blockquote>
-            <h3>Ben Zittlau</h2>
-            <p>@benzittlau</p>
-            <p>benzittlau.com</p>
-            <p>springlaunched.com</p>
-            <p>ben@getjobber.com</p>
-          </section>
-          <section>
-            <h2>Resources</h2>
-            <ul class="list--no-bullets">
-              <li><a href="https://vuejs.org/">Main Vue.js Docs (great resource)</a></li>
-              <li><a href="https://vuejs.org/v2/guide/comparison.html">Vue.js doc comparing to other frameworks</a></li>
-              <li><a href="http://vuejsdevelopers.com/2017/05/28/switch-from-react-to-vue-js/">Switching From React To Vue.js</a></li>
-              <li><a href="https://about.gitlab.com/2016/10/20/why-we-chose-vue/">GitLab - Why we chose vue</a></li>
-              <li><a href="https://blog.codeship.com/consider-vuejs-next-web-project/">Codeship - Consider VueJS for Your Next Web Project</a></li>
-              <li><a href="https://exchange-js-hows-the-vue.herokuapp.com/#/">This Talk</a></li>
-            </ul>
-          </section>
+        <section>
+          <h3>Ben Zittlau</h2>
+          <p>@benzittlau</p>
+          <p>benzittlau.com</p>
+          <p>springlaunched.com</p>
+          <p>ben@getjobber.com</p>
+        </section>
+        <section>
+          <h2>Resources</h2>
+          <ul class="list--no-bullets">
+            <li><a href="https://www.youtube.com/watch?v=jvKGQSFQf10">Change Detection Reinvented - Victor Savkin</a></li>
+            <li><a href="http://mrale.ph/blog/2015/01/11/whats-up-with-monomorphism.html">What's up with Monomorphism -  Vyacheslav Egorov</a></li>
+            <li><a href="http://mrale.ph/blog/2012/06/03/explaining-js-vms-in-js-inline-caches.html">Explaining JavaScript VMs in JavaScript - Inline Caches</a></li>
+            <li><a href="https://jsperf.com/monomorphism-vs-polymorphism/11">Benchmark for momomorphism vs polymorpism, might be what I want to demo!</a></li>
+            <li><a href="https://gist.github.com/twokul/9501770">Hidden classes in JavaScript and Inline Caching</a></li>
+            <li><a href="http://blog.mgechev.com/2016/08/14/ahead-of-time-compilation-angular-offline-precompilation/">Ahead-of-Time Compilation in Angular</a></li>
+            <li><a href="http://richardartoul.github.io/jekyll/update/2015/04/26/hidden-classes.html">Javascript Hidden Classes and Inline Caching in V8</a></li>
+            <li><a href="http://mrale.ph/talks/awp2014/#/92">Presentation with some examples of inline cache IR's and patching</a></li>
+          </ul>
         </section>
       </div>
     </div>
