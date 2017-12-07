@@ -75,12 +75,8 @@
           <h3>We will cover</h3>
           <p>What immutable means</p>
           <p>Some related concepts (purity and side-effects)</p>
-          <p>How it's handled in Angular</p>
-          <p>How Angular atttempts to make this fast through monomorphism</p>
-          <p>How the Angular compiler is part of that stragety</p>
-          <h2>If Time:</h2>
-          <p>Why monomorphism makes javascript faster (Inline Cache)</p>
-          <p>What object shapes are in Javascript</p>
+          <p>Benefits of using immutable structures</p>
+          <p>What it looks like in React and Angular</p>
         </section>
         <section>
           <section>
@@ -268,9 +264,9 @@ printf("%s",my_string);
 </code></pre>
               </div>
               <div class="flex-column">
-                  <div><img src="img/theoretical_string_immutable.png" alt="A immutated string in memory"></div>
+                <div><img src="img/theoretical_string_immutable.png" alt="A immutated string in memory"></div>
               </div>
-                <div class="flex-column">
+              <div class="flex-column">
 <pre><code data-trim class='c'>
 /* Thread 2 */
 strcpy(my_string_2,my_string);
@@ -300,344 +296,181 @@ my_string_2[10] = 't';
           </section>
           <section>
             <h3>Immutability replaces change detection with reference equality</h3>
+
 <pre><code data-trim class='js'>
-let state = { a: 1, b: 2, c: 3 }
-let saved_state = state;
+let state = { a: 1, b: 2, c: 3 };
+let savedState = state;
 
 state.a = 4
 
-console.log(saved_state === state);
+console.log(savedState === state); //true
 </code></pre>
-          </section>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-          <section>
-            <h3>React Change Detection (Virtual DOM)</h3>
-            <div class="flex-container">
-              <div class="flex-column">
-                <p>Data/Model/State</p>
-                <pre><code data-trim data-noescape class='json'>
-{
-  heroes: [
-    'Hiro Nakamura',
-    'Claire Bennet',
-    'Peter Petrelli',<span data-fragment-index="1" class="fragment hidden changes">
-    'Matt Parkman'</span>
-  ]
-}
-</code></pre>
-              </div>
-              <div class="flex-column">
-                <p class="fragment highlight-red" data-fragment-index="2">Template</p>
-<pre><code data-trim class='html'>
-<ul>
-  <% for hero in heroes %>
-    <li><% hero %></li>
-  <% end %>
-</ul>
-</code></pre>
-              </div>
-              <div class="fragment hidden flex-column" data-fragment-index="3">
-                <p class="changes">Virtual DOM</p>
-<pre><code data-trim class='html'>
-<ul>
-  <li>Hiro Nakamura</li>
-  <li>Claire Bennet</li>
-  <li>Peter Petrelli</li>
-  <li>Matt Parkman</li>
-</ul>
-</code></pre>
-              </div>
-              <div class="flex-column">
-                <p>DOM</p>
-<pre><code data-trim class='html'>
-<ul>
-  <li>Hiro Nakamura</li>
-  <li>Claire Bennet</li>
-  <li>Peter Petrelli</li>
-</ul>
-</code></pre>
-              </div>
-            </div>
-          </section>
-          <section>
-            <h3>Ember/Vue Change Detection (Observables)</h3>
-            <div class="flex-container">
-              <div class="flex-column">
-                <p>Data/Model/State</p>
-                <pre><code data-trim data-noescape class='json'>
-{
-  <span data-fragment-index="1" class="fragment highlight-red">heroes:</span> [
-    'Hiro Nakamura',
-    'Claire Bennet',
-    'Peter Petrelli',<span data-fragment-index="2" class="fragment hidden changes">
-    'Matt Parkman'</span>
-  ]
-}
-</code></pre>
-              </div>
-              <div class="flex-column">
-                <p>Template</p>
-<pre><code data-trim data-noescape class='json'>
-
-&lt;ul&gt;
-  &lt;% for hero in <span data-fragment-index="1" class="fragment highlight-red">heroes</span> %&gt;
-    &lt;li&gt;&lt;% hero %&gt;&lt;/li&gt;
-  &lt;% end %&gt;
-&lt;/ul&gt;
-</code></pre>
-              </div>
-              <div class="flex-column">
-                <p>DOM</p>
-<pre><code data-trim data-noescape class='html'>
-&lt;ul&gt;
-  <span data-fragment-index="1" class="fragment highlight-red">&lt;li&gt;Hiro Nakamura&lt;/li&gt;
-  &lt;li&gt;Claire Bennet&lt;/li&gt;
-  &lt;li&gt;Peter Petrelli&lt;/li&gt;</span>
-&lt;/ul&gt;
-</code></pre>
-              </div>
-            </div>
-          </section>
-          <section>
-            <h3>Angular Change Detection (Compare States)</h3>
-            <div class="flex-container">
-              <div class="flex-column">
-                <p>Data/Model/State</p>
-<pre><code data-trim data-noescape class='json'>
-{
-  heroes: [
-    'Hiro Nakamura',
-    'Claire Bennet',
-    'Peter Petrelli',
-  ]
-}
-</code></pre>
-              </div>
-              <div data-fragment-index="1" class="fragment hidden flex-column">
-                <p class="changes">Next State</p>
-<pre><code data-trim data-noescape class='json'>
-  {
-    heroes: [
-      'Hiro Nakamura',
-      'Claire Bennet',
-      'Peter Petrelli',<span class="changes">
-      'Matt Parkman'</span>
-    ]
-  }
-</code></pre>
-              </div>
-              <div class="flex-column">
-                <p>Template</p>
-<pre><code data-trim class='html'>
-<ul>
-  <% for hero in heroes %>
-    <li><% hero %></li>
-  <% end %>
-</ul>
-</code></pre>
-              </div>
-              <div class="flex-column">
-                <p>Virtual DOM</p>
-<pre><code data-trim class='html'>
-<ul>
-  <li>Hiro Nakamura</li>
-  <li>Claire Bennet</li>
-  <li>Peter Petrelli</li>
-  <li>Matt Parkman</li>
-</ul>
-</code></pre>
-              </div>
-            </div>
-          </section>
-          <section>
-            <h3>To summarize...</h3>
-            <p data-fragment-index="1" class="fragment">Change detection is how frameworks know they need to update the view</p>
-            <p data-fragment-index="2" class="fragment">Each framework uses a different strategy</p>
-            <p data-fragment-index="3" class="fragment">Angular's strategy is to check each components state each "tick" to see if it's changed</p>
-          </section>
-        </section>
-        <section>
-          <section>
-            <h3>But how do you make it fast?</h3>
-          </section>
-          <section>
-            <h3>Change Detection Time = C * N</h3>
-            <p>C - time to check a binding</p>
-            <p>N - number of bindings</p>
-          </section>
-          <section>
-              <div><img src="img/angular_change_detector_tree.png" alt="Vue JS Trends"></div>
-              <div class="source"><a href="https://blog.thoughtram.io/angular/2016/02/22/angular-2-change-detection-explained.html">Source</a></div>
-              <aside class="notes">
-                While this may seem pretty fast when you're only looking at a single component,
-                applications will often be made up of many, many components in a tree structure
-                like that shown here.  Each of those components must check it's own data
-                to see if it's changed (this isn't strictly true in Angular, but is true by
-                default).<br/><br/>
-
-                Because this needs to happen every cycle, we need it to be incredibly fast.
-              </aside>
-          </section>
-          <section>
-            <h3>A basic Angular component</h3>
 <pre><code data-trim class='js'>
+let { Map } = require('immutable')
+let state = Map({ a: 1, b: 2, c: 3 })
+let updatedState = state.set('a', 4)
+
+console.log(updatedMap === originalMap); //false
+</code></pre>
+          </section>
+          <section>
+            <h3>In React - Pure Component</h3>
+<pre><code data-trim class='js'>
+// While rely on normal virtual DOM diffing
+class Greeting extends React.Component {
+  render() {
+    return <h1>Hello, {this.props.name}</h1>;
+  }
+}
+</code></pre>
+<pre><code data-trim class='js'>
+// Will perform shallow reference
+// equality in `shouldComponentUpdate()`
+class Greeting extends React.PureComponent {
+  render() {
+    return <h1>Hello, {this.props.name}</h1>;
+  }
+}
+</code></pre>
+          </section>
+          <section>
+            <h3>In Angular - onPush</h3>
+<pre><code data-trim class='js'>
+// Will rely on object value comparison
 @Component({
-  selector: 'article-heading',
-  template: `
-    <div>
-      <h2>{{article.title}}</h2>
-      <p>By: {{article.author}}</p>
-    </div>
-  `
+  selector: 'greet',
+  template: 'Hello {{name}}!'},
 })
-export class ArticleHeading {
-  @Input() article: Article;
+export class HeroDetailComponent {
+  @Input() name: String;
 }
-</code></pre>
-            <aside class="notes">
-              This basic component to display a heading for an article
-              would be passed an input "Article".  This components
-              change detector will need to determine if that article
-              has changed each tick of the application.
-            </aside>
-          </section>
-          <section>
-            <h3>A conceptual Angular.js change detector</h3>
-<pre><code data-trim class='js'>
-while (op) {
-  var getter = getterFor(op.fieldName);
-
-  var oldValue = op.value;
-  var newValue = getter(op.context);
-
-  if (oldValue !== newValue) {
-    op.value = newValue;
-
-    var fn = reactionFunctionFor(op);
-    fn(oldValue, newValue);
-  }
-
-  op = op.next;
-}
-</code></pre>
-            <div class="source"><a href="https://www.youtube.com/watch?v=jvKGQSFQf10">Source</a></div>
-            <aside class="notes">
-              This is representation of the angularjs change detector by Victor Savkin.
-              The most important thing to note is that this is a generic change detector,
-              it is used to check every binding in the application.  This is very DRY,
-              reusing the same code for every component. But... with Javascript that has issues...<br/><br/>
-
-              The op object could look very different each time it's called.
-            </aside>
-          </section>
-          <section>
-            <h3>A conceptual Angular change detector</h3>
-<pre><code data-trim class='html'>
-<p>By: {{article.author}}</p>
 </code></pre>
 <pre><code data-trim class='js'>
-var author = obj.author;
-if (author !== this.previousAuthor) {
-  this.previousAuthor = author;
-  this.authorBinding.string = author;
+// Will perform shallow reference
+// equality checks
+@Component({
+  selector: 'greet',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: 'Hello {{name}}!'},
+})
+export class HeroDetailComponent {
+  @Input() name: String;
 }
 </code></pre>
-            <div class="source"><a href="https://www.youtube.com/watch?v=jvKGQSFQf10">Source</a></div>
-            <aside class="notes">
-              Notice that this change detector is written specifically to our context. Because
-              this change detector is written specifically for this specific component, it will
-              always see the same "shapes" of objects.  I.e. obj will always have a title
-              and author attribute.
-
-              This is the fundamental idea of a monomorphic function, that the objects that it
-              works on always have the same shape.
-            </aside>
           </section>
           <section>
-            <h2>Hey, wait a minute... What is a shape?</h2>
-            <h2 class="fragment">That sounds an awful lot like a class...</h2>
-          </section>
-          <section>
-            <h2>Ignore the man behind the curtain for now...</h2>
-            <blockquote cite="http://blog.mgechev.com/2016/08/14/ahead-of-time-compilation-angular-offline-precompilation/">This allows the JavaScript virtual machine to perform property access caching and execute the change detection/rendering logic much faster. - Minko Gechev</blockquote>
-          </section>
-          <section>
-            <h3>Where does the per-component change detector come from?</h3>
-            <p>The code you write isn't the code that runs</p>
-            <p>Angular has a JIT and AOT compiler that generates code, including these change detectors</p>
-            <aside class="notes">
-              Having a compilation step comes at a cost.  If you are using the Just In Time compiler
-              the angular library will be larger, and your boot time will be slower while it runs the
-              compiler.  This is why in Angular 2 they introduced the ability to do Ahead Of Time
-              compilation.  Given that most applications now will have a build step before
-              being deployed this will be fairly straightforward to implement in most cases, and
-              will avoid the additional payload size and compile time.
-            </aside>
+            <h3>Cascading Effects</h3>
+            <div><img src="img/cd_tree_with_branch_skipped.png" alt="A modified change detection tree"></div>
+            <div class="source"><a href="https://blog.thoughtram.io/angular/2016/02/22/angular-2-change-detection-explained.html">Source</a></div>
           </section>
         </section>
         <section>
           <section>
-            <h2>Why are monomorphic functions faster?</h2>
+            <h3>But where's the beef?(Immutable.js)</h3>
           </section>
           <section>
-            <img src="img/object_a.png" />
-          </section>
-          <section>
-            <h2>Why are object shapes?</h2>
-          </section>
-          <section>
+            <h3>Without Immutable.js</h3>
 <pre><code data-trim class='js'>
-function Point(x,y) {
-  this.x = x;
-  this.y = y;
-}
-
-var obj = new Point(1,2);
+...
+// From https://redux.js.org/docs/basics/Reducers.html
+switch (action.type) {
+  case SET_VISIBILITY_FILTER:
+    return Object.assign({}, state, {
+      visibilityFilter: action.filter
+    })
+...
 </code></pre>
-            <img src="img/hidden_classes.png" />
-            <div class="source"><a href="http://richardartoul.github.io/jekyll/update/2015/04/26/hidden-classes.html">Source</a></div>
-
+            <blockquote class="fragment">"The Object.assign() method is used to copy
+              the values of all enumerable own properties
+              from one or more source objects to a target object."</blockquote>
+          </section>
+          <section>
+            <h3>With Immutable.js</h3>
+<pre><code data-trim class='js'>
+...
+// From https://redux.js.org/docs/basics/Reducers.html
+switch (action.type) {
+  case SET_VISIBILITY_FILTER:
+    return state.set('visibilityFilter', action.filter);
+    })
+...
+</code></pre>
+            <p>This is a little bit cleaner, but is that why we use it?</p>
+          </section>
+          <section>
+            <h3>Shared Structure</h3>
+            <div><img src="img/linkedlist_immutable.png" alt="An example linked list"></div>
+            <div class="source"><a href="https://auth0.com/blog/intro-to-immutable-js/">Source</a></div>
+          </section>
+          <section>
+            <h3>Trie(s)</h3>
+            <div class="flex-container">
+              <div class="flex-column">
+                <div><img src="img/keys_and_values.png" alt="A list of keys and values"></div>
+              </div>
+              <div class="flex-column">
+                <div><img src="img/key_value_trie.png" alt="Trie for a map"></div>
+                <div class="source"><a href="https://en.wikipedia.org/wiki/Trie">Source</a></div>
+              </div>
+              <div class="flex-column">
+                <div><img src="img/modified_trie.png" alt="Modified trie for a map"></div>
+                <div class="source"><a href="https://medium.com/@dtinth/immutable-js-persistent-data-structures-and-structural-sharing-6d163fbd73d2">Source</a></div>
+              </div>
+            </div>
+          </section>
+          <section>
+            <h3>Your Mileage May Vary</h3>
+            <div class="flex-container">
+              <div class="flex-column">
+                <div><img src="img/react_immutable_benchmark.png" alt="React immutable benchmark"></div>
+                <div class="source"><a href="https://auth0.com/blog/intro-to-immutable-js/">Source</a></div>
+              </div>
+              <div class="flex-column">
+                <blockquote>Premature optimization is the root of all evil -- Donald Knuth</blockquote>
+            </div>
           </section>
         </section>
-
         <section>
-          <h3>Ben Zittlau</h2>
-          <p>@benzittlau</p>
-          <p>benzittlau.com</p>
-          <p>springlaunched.com</p>
-          <p>ben@getjobber.com</p>
-        </section>
-        <section>
-          <h2>Resources</h2>
-          <ul class="list--no-bullets">
-            <li><a href="https://www.youtube.com/watch?v=jvKGQSFQf10">Change Detection Reinvented - Victor Savkin</a></li>
-            <li><a href="http://mrale.ph/blog/2015/01/11/whats-up-with-monomorphism.html">What's up with Monomorphism -  Vyacheslav Egorov</a></li>
-            <li><a href="http://mrale.ph/blog/2012/06/03/explaining-js-vms-in-js-inline-caches.html">Explaining JavaScript VMs in JavaScript - Inline Caches</a></li>
-            <li><a href="https://jsperf.com/monomorphism-vs-polymorphism/11">Benchmark for momomorphism vs polymorpism, might be what I want to demo!</a></li>
-            <li><a href="https://gist.github.com/twokul/9501770">Hidden classes in JavaScript and Inline Caching</a></li>
-            <li><a href="http://blog.mgechev.com/2016/08/14/ahead-of-time-compilation-angular-offline-precompilation/">Ahead-of-Time Compilation in Angular</a></li>
-            <li><a href="http://richardartoul.github.io/jekyll/update/2015/04/26/hidden-classes.html">Javascript Hidden Classes and Inline Caching in V8</a></li>
-            <li><a href="http://mrale.ph/talks/awp2014/#/92">Presentation with some examples of inline cache IR's and patching</a></li>
-          </ul>
+          <section>
+            <h3>What We covered</h3>
+            <p>&#10004;What immutable means</p>
+            <p>&#10004;Some related concepts (purity and side-effects)</p>
+            <p>&#10004;Benefits of using immutable structures</p>
+            <p>&#10004;What it looks like in React and Angular</p>
+          </section>
+          <section>
+            <h2>My Goal</h2>
+            <div class="flex-container">
+              <div class="flex-column fragment fade-out">
+                <h2>A</h2>
+                <p>Immutable.js will fundamentally change the way you write Javascript.</p>
+              </div>
+              <div class="flex-column">
+                <h2>B</h2>
+                <p>Immutable.js will, in some cases, be a useful tool to use for certain classes of problems.</p>
+              </div>
+            </div>
+          </section>
+          <section>
+            <h3>Ben Zittlau</h2>
+            <p>@benzittlau</p>
+            <p>benzittlau.com</p>
+            <p>springlaunched.com</p>
+            <p>ben@getjobber.com</p>
+          </section>
+          <section>
+            <h2>Resources</h2>
+            <ul class="list--no-bullets">
+              <li><a href="https://www.youtube.com/watch?v=I7IdS-PbEgI">React.js Conf 2015 - Immutable Data and React - Lee Byron</a></li>
+              <li><a href="https://facebook.github.io/immutable-js/">Immutable collections for JavaScript</a></li>
+              <li><a href="https://auth0.com/blog/intro-to-immutable-js/">Introduction to Immutable.js - Sebastián Peyrott</a></li>
+              <li><a href="https://medium.com/@dtinth/immutable-js-persistent-data-structures-and-structural-sharing-6d163fbd73d2">Immutable.js, persistent data structures and structural sharing</a></li>
+              <li><a href="https://reactjs.org/docs/react-api.html#reactpurecomponent">React PureComponent API docs</a></li>
+              <li><a href="http://blog.scottlogic.com/2016/01/05/angular2-with-immutablejs.html">Angular 2 with Immutable.js</a></li>
+              <li><a href="https://blog.angular-university.io/onpush-change-detection-how-it-works/">Angular OnPush Change Detection and Component Design - Avoid Common Pitfalls</a></li>
+            </ul>
+          </section>
         </section>
       </div>
     </div>
