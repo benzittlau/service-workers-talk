@@ -42,7 +42,7 @@
       <!-- Any section element inside of this container is displayed as a slide -->
       <div class="slides">
         <section>
-          <h2>Angular Change Detection and the VM: BFF's</h1>
+          <h2>Immutable Concepts and Immutable.js</h1>
           <div class="flex-container">
             <div class="flex-column">
               <img src="img/bens_face.png" />
@@ -57,9 +57,24 @@
           </div>
         </section>
         <section>
+          <section>
+            <h2>My Goal</h2>
+            <div class="flex-container fragment">
+              <div class="flex-column">
+                <h2>A</h2>
+                <p>Immutable.js will fundamentally change the way you write Javascript.</p>
+              </div>
+              <div class="flex-column">
+                <h2>B</h2>
+                <p>Immutable.js will, in some cases, be a useful tool to use for certain classes of problems.</p>
+              </div>
+            </div>
+          </section>
+        </section>
+        <section>
           <h3>We will cover</h3>
-          <p>What change detection is</p>
-          <p>How it's handled in React, Vue and Ember</p>
+          <p>What immutable means</p>
+          <p>Some related concepts (purity and side-effects)</p>
           <p>How it's handled in Angular</p>
           <p>How Angular atttempts to make this fast through monomorphism</p>
           <p>How the Angular compiler is part of that stragety</p>
@@ -69,85 +84,213 @@
         </section>
         <section>
           <section>
-            <h3>What is change detection?</h3>
+            <h3>What is immutability?</h3>
           </section>
           <section>
             <div class="flex-container">
               <div class="flex-column">
-                <p>Data/Model/State</p>
-                <pre><code data-trim class='json'>
-{
-  heroes: [
-    'Hiro Nakamura',
-    'Claire Bennet',
-    'Peter Petrelli'
-  ]
+                <h3>Persistent Data Structures</h3>
+                <p>A data structure is persistent if it always preserves previous versions of itself when it is modified</p>
+              </div>
+            </div>
+          </section>
+          <section>
+            <h3>Theoretical String In Memory</h3>
+            <div class="flex-container">
+              <div class="flex-column">
+<pre><code data-trim class='c'>
+char my_string[] = "A black dog.";
+</code></pre>
+              </div>
+              <div class="flex-column">
+                  <div><img src="img/theoretical_string_base.png" alt="A string in memory"></div>
+              </div>
+            </div>
+          </section>
+          <section>
+            <h3>Let's Modify Our String</h3>
+            <div class="flex-container">
+              <div class="flex-column">
+<pre><code data-trim class='c'>
+char my_string[] = "A black dog.";
+my_string[8] = 'c';
+my_string[9] = 'a';
+my_string[10] = 't';
+</code></pre>
+              </div>
+              <div class="flex-column">
+                  <div><img src="img/theoretical_string_mutated.png" alt="A mutated string in memory"></div>
+              </div>
+            </div>
+            <p class="fragment">We've lost the original state; this is not a persistent data structure</p>
+          </section>
+          <section>
+            <h3>Let's Try Again</h3>
+            <div class="flex-container">
+              <div class="flex-column">
+<pre><code data-trim class='c'>
+char my_string[] = "A black dog.";
+char my_string_2[13];
+strcpy(my_string_2,my_string);
+my_string_2[8] = 'c';
+my_string_2[9] = 'a';
+my_string_2[10] = 't';
+</code></pre>
+              </div>
+              <div class="flex-column">
+                  <div><img src="img/theoretical_string_immutable.png" alt="A immutated string in memory"></div>
+              </div>
+            </div>
+            <p class="fragment">We've preserved our original state; Immutability!</p>
+          </section>
+          <section>
+            <div class="flex-container">
+              <div class="flex-column">
+                <h3>So what is immutability?</h3>
+                <p>
+                  Immutability means using persistent data structures,
+                  which are enforced either through tools (libraries or
+                  programming languages) or convention.
+                </p>
+                <h4 class="fragment">Okay, but why is this useful?</h4>
+              </div>
+            </div>
+          </section>
+        </section>
+        <section>
+          <section>
+            <h3>A brief detour</h3>
+          </section>
+          <section>
+            <h2>A + B = C</h2>
+            <h3 class="fragment">C - B = A</h3>
+            <h3 class="fragment">C - A = B</h3>
+          </section>
+          <section>
+            <h2>A + B = C</h2>
+            <p>A & B are positive integers</p>
+            <h3 class="fragment">C - B = A</h3>
+            <h3 class="fragment">C - A = B</h3>
+            <h3 class="fragment">C will be a positive integer</h3>
+            <h3 class="fragment">e.g. X / C won't explode</h3>
+          </section>
+          <section>
+            <h3>By imposing constraints we can guarantee more about the possible states of our code at time of writing.</h3>
+          </section>
+        </section>
+        <section>
+          <section>
+            <h3>On our way back from our detour we ran into some friends</h3>
+          </section>
+          <section>
+            <h3>Purity</h3>
+          </section>
+          <section>
+            <div class="flex-container">
+              <div class="flex-column">
+                <h3 class="fragment">Not Pure</h3>
+<pre><code data-trim class='js'>
+var phrase = "Hello";
+
+function greet(name) {
+  return phrase + ' ' + name;
 }
+
+greet("Bob");
 </code></pre>
               </div>
               <div class="flex-column">
-                <p>Template</p>
-<pre><code data-trim class='html'>
-<ul>
-  <% for hero in heroes %>
-    <li><% hero %></li>
-  <% end %>
-</ul>
-</code></pre>
-              </div>
-              <div class="flex-column">
-                <p>DOM</p>
-<pre><code data-trim class='html'>
-<ul>
-  <li>Hiro Nakamura</li>
-  <li>Claire Bennet</li>
-  <li>Peter Petrelli</li>
-</ul>
+                <h3 class="fragment">Pure</h3>
+<pre><code data-trim class='js'>
+function greet(phrase, name) {
+  return phrase + ' ' + name;
+}
+
+greet("Hi", "Bob");
 </code></pre>
               </div>
             </div>
-            <aside class="notes">
-              One of the major roles modern javascript frameworks serve
-              is to allow you to combine data with a template to create
-              a DOM structure.<br/><br/>
-
-              There was a time when it might have been useful simply to
-              do this once, but modern javascript apps often have changing
-              data and state, and it is necessary to make sure the interface
-              reflects any changes to that data.<br/><br/>
-
-              Change detection is the first part of that process; allowing the
-              framework to be aware that changes have occurred, so they can handle
-              those changes appropriately.<br/><br/>
-
-              We won't be looking at how those actual updates are applied in this talk,
-              if you're interested in that please see my talk from last year on
-              Virtual DOM.
-            </aside>
           </section>
           <section>
-            <h3>So why should we care about change detection?</h3>
-            <p>DOM changes are slow, so it's hard to make an app fast</p>
-            <p>Different approaches used by the different frameworks</p>
-            <p>No "right" answer</p>
-            <aside class="notes">
-              I personally find the different ways in which frameworks handle
-              the challenges of change detection of DOM mutation incredibly
-              interesting.  Making a web application "feel" fast is very hard
-              (as anyone who's attempted to make an interactive application without
-              the modern tools can likely attest).<br/><br/>
-
-              Each framework has taken a different approach, and neither of these
-              approaches has "won".  As the frameworks are converging towards similar
-              concepts in terms of components and data and action flows, their change
-              detection and update approaches have remained very different.<br/><br/>
-
-              How the framework handles these questions has direct impact on how the
-              user of the framework has to work, so understanding these differences
-              gives a better appreciation for the usage differences between the
-              frameworks.
-            </aside>
+            <h3>Side-Effects</h3>
           </section>
+          <section>
+            <div class="flex-container">
+              <div class="flex-column">
+                <h3 class="fragment">Side-Effects</h3>
+<pre><code data-trim class='js'>
+var greeting_counter = 0;
+
+function greet(name) {
+  greeting_counter++;
+  return 'Hello ' + name;
+}
+
+greet("Bob");
+</code></pre>
+              </div>
+              <div class="flex-column">
+                <h3 class="fragment">Side-Effect Free</h3>
+<pre><code data-trim class='js'>
+var greeting_counter = 0;
+
+function greet(name) {
+  return 'Hello ' + name;
+}
+
+greet("Bob");
+greeting_counter++;
+</code></pre>
+              </div>
+            </div>
+          </section>
+          <section>
+            <h3>Pure + Side-effect Free = Referential Transparency</h3>
+          </section>
+          <section>
+            <h3>Pure + Side-effect Free + Immutable Go Well Together</h3>
+            <p>Let's take 10 seconds to imagine testing a codebase that used pure, side-effect free, functions and immutable state.</p>
+          </section>
+        </section>
+        <section>
+          <section>
+            <h3>Back to Immutability:</h3>
+            <h3>What does it get us?</h3>
+          </section>
+          <section>
+            <h3>Immutable data structures are guaranteed thread safe</h3>
+            <p class="fragment">But Javascript is single threaded...</p>
+          </section>
+          <section>
+            <h3>Immutable data structures allow for non-halting garbage collection</h3>
+            <p class="fragment">But Javascript's GC is halting...</p>
+          </section>
+          <section>
+            <h3>Immutable data structures allow for efficient change detection</h3>
+            <p class="fragment">But... no wait, that's good!</p>
+          </section>
+        </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
           <section>
             <h3>React Change Detection (Virtual DOM)</h3>
             <div class="flex-container">
