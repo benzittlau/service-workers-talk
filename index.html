@@ -260,6 +260,26 @@ greeting_counter++;
           <section>
             <h3>Immutable data structures are guaranteed thread safe</h3>
             <p class="fragment">But Javascript is single threaded...</p>
+            <div class="flex-container">
+              <div class="flex-column">
+<pre><code data-trim class='c'>
+/* Thread 1 */
+printf("%s",my_string);
+</code></pre>
+              </div>
+              <div class="flex-column">
+                  <div><img src="img/theoretical_string_immutable.png" alt="A immutated string in memory"></div>
+              </div>
+                <div class="flex-column">
+<pre><code data-trim class='c'>
+/* Thread 2 */
+strcpy(my_string_2,my_string);
+my_string_2[8] = 'c';
+my_string_2[9] = 'a';
+my_string_2[10] = 't';
+</code></pre>
+              </div>
+            </div>
           </section>
           <section>
             <h3>Immutable data structures allow for non-halting garbage collection</h3>
@@ -270,7 +290,25 @@ greeting_counter++;
             <p class="fragment">But... no wait, that's good!</p>
           </section>
         </section>
+        <section>
+          <section>
+            <h3>Immutability and change detection</h3>
+          </section>
+          <section>
+            <h3>Efficient change Detection is a hard problem</h3>
+            <p>I gave a previous talk on <a href="https://angular-monomorphism-talk.herokuapp.com/#/">monomorphic change detectors</a> in Angular</p>
+          </section>
+          <section>
+            <h3>Immutability replaces change detection with reference equality</h3>
+<pre><code data-trim class='js'>
+let state = { a: 1, b: 2, c: 3 }
+let saved_state = state;
 
+state.a = 4
+
+console.log(saved_state === state);
+</code></pre>
+          </section>
 
 
 
