@@ -343,7 +343,7 @@ class Greeting extends React.PureComponent {
 // Will rely on object value comparison
 @Component({
   selector: 'greet',
-  template: 'Hello {{name}}!'},
+  template: '<h1>Hello, {{name}}</h1>',
 })
 export class HeroDetailComponent {
   @Input() name: String;
@@ -355,7 +355,7 @@ export class HeroDetailComponent {
 @Component({
   selector: 'greet',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: 'Hello {{name}}!'},
+  template: '<h1>Hello, {{name}}</h1>'},
 })
 export class HeroDetailComponent {
   @Input() name: String;
