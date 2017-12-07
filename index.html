@@ -185,7 +185,7 @@ my_string_2[10] = 't';
           <section>
             <div class="flex-container">
               <div class="flex-column">
-                <h3 class="fragment">Not Pure</h3>
+                <h3 class="fragment" data-fragment-index=1>Not Pure</h3>
 <pre><code data-trim class='js'>
 var phrase = "Hello";
 
@@ -197,7 +197,7 @@ greet("Bob");
 </code></pre>
               </div>
               <div class="flex-column">
-                <h3 class="fragment">Pure</h3>
+                <h3 class="fragment" data-fragment-index=1>Pure</h3>
 <pre><code data-trim class='js'>
 function greet(phrase, name) {
   return phrase + ' ' + name;
@@ -207,6 +207,7 @@ greet("Hi", "Bob");
 </code></pre>
               </div>
             </div>
+            <blockquote class="fragment" data-fragment-index=2>"The function always evaluates the same result value given the same argument value(s)."</blockquote>
           </section>
           <section>
             <h3>Side-Effects</h3>
@@ -214,7 +215,7 @@ greet("Hi", "Bob");
           <section>
             <div class="flex-container">
               <div class="flex-column">
-                <h3 class="fragment">Side-Effects</h3>
+                <h3 class="fragment" data-fragment-index=1>Side-Effects</h3>
 <pre><code data-trim class='js'>
 var greeting_counter = 0;
 
@@ -227,7 +228,7 @@ greet("Bob");
 </code></pre>
               </div>
               <div class="flex-column">
-                <h3 class="fragment">Side-Effect Free</h3>
+                <h3 class="fragment" data-fragment-index=1>Side-Effect Free</h3>
 <pre><code data-trim class='js'>
 var greeting_counter = 0;
 
@@ -240,6 +241,7 @@ greeting_counter++;
 </code></pre>
               </div>
             </div>
+            <blockquote class="fragment" data-fragment-index=2>"A function or expression is said to have a side effect if it modifies some state outside its scope or has an observable interaction with its calling functions or the outside world besides returning a value."</blockquote>
           </section>
           <section>
             <h3>Pure + Side-effect Free = Referential Transparency</h3>
