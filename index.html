@@ -291,6 +291,19 @@ self.addEventListener('message', function(event){
             <h2>Complicated lifecycle - Demos</h2>
             <p>"Second time's a charm" - Won't activate until second load</p>
             <p>"Ctrl-R Spam" - Reloads won't reload the service worker</p>
+            <p>Branch: api-request-service-worker</p>
+          </section>
+          <section>
+            <h2>Weird interactions with dev tooling</h2>
+            <div><img src="img/cached_dev_tools.png" alt="Sockjs poll in cache"></div>
+          </section>
+          <section>
+            <h2>Recommended to use chrome incognito</h2>
+            <p>Ensure that each page load is "clean"</p>
+            <p>Chrome extension requests will go through service worker</p>
+          </section>
+          <section>
+            <h2>Overall felt uncomfortable and awkward to build this very simple demo app</h2>
           </section>
         </section>
         <section>
@@ -311,13 +324,14 @@ self.addEventListener('message', function(event){
           <section>
             <h2>Resources</h2>
             <ul class="list--no-bullets">
-              <li><a href="https://www.youtube.com/watch?v=I7IdS-PbEgI">React.js Conf 2015 - Immutable Data and React - Lee Byron</a></li>
-              <li><a href="https://facebook.github.io/immutable-js/">Immutable collections for JavaScript</a></li>
-              <li><a href="https://auth0.com/blog/intro-to-immutable-js/">Introduction to Immutable.js - Sebastián Peyrott</a></li>
-              <li><a href="https://medium.com/@dtinth/immutable-js-persistent-data-structures-and-structural-sharing-6d163fbd73d2">Immutable.js, persistent data structures and structural sharing</a></li>
-              <li><a href="https://reactjs.org/docs/react-api.html#reactpurecomponent">React PureComponent API docs</a></li>
-              <li><a href="http://blog.scottlogic.com/2016/01/05/angular2-with-immutablejs.html">Angular 2 with Immutable.js</a></li>
-              <li><a href="https://blog.angular-university.io/onpush-change-detection-how-it-works/">Angular OnPush Change Detection and Component Design - Avoid Common Pitfalls</a></li>
+              <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers">Using Service Workers - MDN Web Docs</a></li>
+              <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API">Service Worker API - MDN Web Docs</a></li>
+              <li><a href="https://developers.google.com/web/fundamentals/primers/service-workers/">Service Workers: an Introduction - Matt Gaunt</a></li>
+              <li><a href="https://developers.google.com/web/fundamentals/primers/service-workers/lifecycle">The Service Worker Lifecycle - Jake Archibald</a></li>
+              <li><a href="https://developers.google.com/web/fundamentals/instant-and-offline/offline-cookbook/">The Offline Cookbook - Jake Archibald</a></li>
+              <li><a href="https://jakearchibald.com/2016/caching-best-practices">Caching Best Practices - Jake Archibald</a></li>
+              <li><a href="https://developers.google.com/web/fundamentals/primers/service-workers/high-performance-loading">High Performance Loading - Jeff Posnick</a></li>
+              <li><a href="http://craig-russell.co.uk/2016/01/29/service-worker-messaging.html">How to Send Messages - Craig Russel</a></li>
             </ul>
           </section>
         </section>
