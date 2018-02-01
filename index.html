@@ -42,7 +42,7 @@
       <!-- Any section element inside of this container is displayed as a slide -->
       <div class="slides">
         <section>
-          <h2>Immutable Concepts and Immutable.js</h1>
+          <h2>Trying to Offline the Online</h1>
           <div class="flex-container">
             <div class="flex-column">
               <img style="height:400px" src="img/man_bun_headshot.jpg" />
@@ -58,402 +58,248 @@
           </div>
         </section>
         <section>
-          <section>
-            <h2>My Goal</h2>
-            <div class="flex-container fragment">
-              <div class="flex-column">
-                <h2>A</h2>
-                <p>Immutable.js will fundamentally change the way you write Javascript.</p>
-              </div>
-              <div class="flex-column">
-                <h2>B</h2>
-                <p>Immutable.js will, in some cases, be a useful tool to use for certain classes of problems.</p>
-              </div>
-            </div>
-          </section>
-        </section>
-        <section>
           <h3>We will cover</h3>
-          <p>What immutable means</p>
-          <p>Some related concepts (purity and side-effects)</p>
-          <p>Benefits of using immutable structures</p>
-          <p>What it looks like in React and Angular</p>
+          <p>What service workers are</p>
+          <p>Service workers for static content</p>
+          <p>Service workers for dynamic content</p>
+          <p>Challenges of working with service workers</p>
         </section>
         <section>
           <section>
-            <h3>What is immutability?</h3>
+            <h3>What are service workers?</h3>
           </section>
           <section>
-            <div class="flex-container">
-              <div class="flex-column">
-                <h3>Persistent Data Structures</h3>
-                <p>A data structure is persistent if it always preserves previous versions of itself when it is modified</p>
-              </div>
-            </div>
+            <h3>AppCache is dead</h3>
+            <blockquote>
+              "HTML5 provides an application caching mechanism that lets
+              web-based applications run offline. Developers can use the
+              Application Cache (AppCache) interface to specify resources that
+              the browser should cache and make available to offline users.
+              Applications that are cached load and work correctly even
+              if users click the refresh button when they are offline."
+            </blockquote>
+            <div class="source"><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Using_the_application_cache">Mozilla Developer Docs</a></div>
           </section>
           <section>
-            <h3>Theoretical String In Memory</h3>
-            <div class="flex-container">
-              <div class="flex-column">
-<pre><code data-trim class='c'>
-char my_string[] = "A black dog.";
+            <h3>Long live Service Workers</h3>
+            <blockquote>
+              "This feature is in the process of being removed from the Web platform.
+              (This is a long process that takes many years.) Using any of the
+              offline Web application features at this time is highly discouraged. Use service workers instead."
+            </blockquote>
+            <div class="source"><a href="https://html.spec.whatwg.org/multipage/offline.html#offline">HTML Spec</a></div>
+          </section>
+          <section>
+            <h3>Caching a basic site with AppCache</h3>
+<pre><code data-trim class='html'>
+&lt;html manifest="clock.appcache"&gt;
+  ...
 </code></pre>
-              </div>
-              <div class="flex-column">
-                  <div><img src="img/theoretical_string_base.png" alt="A string in memory"></div>
-              </div>
-            </div>
-          </section>
-          <section>
-            <h3>Let's Modify Our String</h3>
-            <div class="flex-container">
-              <div class="flex-column">
-<pre><code data-trim class='c'>
-char my_string[] = "A black dog.";
-my_string[8] = 'c';
-my_string[9] = 'a';
-my_string[10] = 't';
+<pre><code data-trim>
+CACHE MANIFEST
+app.js
+clock.png
 </code></pre>
-              </div>
-              <div class="flex-column">
-                  <div><img src="img/theoretical_string_mutated.png" alt="A mutated string in memory"></div>
-              </div>
-            </div>
-            <p class="fragment">We've lost the original state; this is not a persistent data structure!</p>
           </section>
           <section>
-            <h3>Let's Try Again</h3>
-            <div class="flex-container">
-              <div class="flex-column">
-<pre><code data-trim class='c'>
-char my_string[] = "A black dog.";
-char my_string_2[13];
-strcpy(my_string_2,my_string);
-my_string_2[8] = 'c';
-my_string_2[9] = 'a';
-my_string_2[10] = 't';
+            <h3>Caching a basic site with a Service Worker</h3>
+<pre><code data-trim class='js'>
+navigator.serviceWorker.register('service-worker.js')
 </code></pre>
-              </div>
-              <div class="flex-column">
-                  <div><img src="img/theoretical_string_immutable.png" alt="A immutated string in memory"></div>
-              </div>
-            </div>
-            <p class="fragment">We've preserved our original state; Immutability!</p>
+<pre><code data-trim class='js'>
+self.addEventListener('install', function(event) {
+  // Perform install steps
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(function(cache) {
+        return cache.addAll([
+          '/',
+          '/app.js',
+          '/clock.png',
+        ]);
+      })
+  );
+});
+</code></pre>
           </section>
           <section>
-            <div class="flex-container">
-              <div class="flex-column">
-                <h3>So what is immutability?</h3>
-                <p>
-                  Immutability means using persistent data structures,
-                  which are enforced either through tools (libraries or
-                  programming languages) or convention.
-                </p>
-                <h4 class="fragment">Okay, but why is this useful?</h4>
-              </div>
-            </div>
-          </section>
-        </section>
-        <section>
-          <section>
-            <h3>A brief detour</h3>
+              <h3>Caching a basic site with a Service Worker (Continued)</h3>
+<pre><code data-trim class='js'>
+self.addEventListener('fetch', function(event) {
+  event.respondWith(
+    caches.match(event.request)
+      .then(function(response) {
+        return response;
+      }
+    )
+  );
+});
+</code></pre>
           </section>
           <section>
-            <h2>A + B = C</h2>
-            <h3 class="fragment">C - B = A</h3>
-            <h3 class="fragment">C - A = B</h3>
+            <h3>Demo Source</h3>
+            <div><a href="https://github.com/benzittlau/vue-clock-demo">Vue Clock Demo App</a></div>
+            <div><a href="https://github.com/benzittlau/vue-clock-demo-api">Vue Clock Demo API</a></div>
+            <h4>Branches</h4>
+            <p>Master</p>
+            <p>base-page-service-worker</p>
           </section>
           <section>
-            <h2>A + B = C</h2>
-            <p>A & B are positive integers</p>
-            <h3 class="fragment">C - B = A</h3>
-            <h3 class="fragment">C - A = B</h3>
-            <h3 class="fragment">C will be a positive integer</h3>
-            <h3 class="fragment">e.g. X / C won't explode</h3>
-          </section>
-          <section>
-            <h3>By imposing constraints we can guarantee more about the possible states of our code at time of writing.</h3>
+            <h3>Great use cases for this basic caching</h3>
+            <p>Documentation Sites</p>
+            <p>Conference schedule</p>
+            <p>Blog</p>
           </section>
         </section>
         <section>
           <section>
-            <h3>On our way back from our detour we ran into some friends</h3>
+            <h3>Static content worked with AppCache</h3>
           </section>
           <section>
-            <h3>Purity</h3>
+            <h3>More Power!</h3>
+            <div><img src="img/tim.jpg" alt="More Power!"></div>
           </section>
           <section>
-            <div class="flex-container">
-              <div class="flex-column">
-                <h3 class="fragment" data-fragment-index=1>Not Pure</h3>
+            <h3>Dynamic Content Caching</h3>
 <pre><code data-trim class='js'>
-var phrase = "Hello";
-
-function greet(name) {
-  return phrase + ' ' + name;
+/* In our fetch listener */
+// Cache hit - return response
+if (response) {
+  return response;
 }
 
-greet("Bob");
+// Cache miss - add to cache
+return fetch(event.request).then(function(response) {
+  caches.open(CACHE_NAME).then(function(cache) {
+    cache.put(event.request, response.clone());
+  });
+
+  return response.clone();
+});
 </code></pre>
-              </div>
-              <div class="flex-column">
-                <h3 class="fragment" data-fragment-index=1>Pure</h3>
+          </section>
+          <section>
+            <h3>Demo</h3>
+            <h4>Branch: api-request-service-worker</h4>
+          </section>
+          <section>
+            <h3>Problem with that demo...</h3>
+            <p>Did you see the time's auto-updating?</p>
+            <blockquote>"There are 2 hard problems in computer science: cache invalidation, naming things, and off-by-1 errors."</blockquote>
+          </section>
+          <section>
+            <h3>Cache Deleting</h3>
 <pre><code data-trim class='js'>
-function greet(phrase, name) {
-  return phrase + ' ' + name;
-}
-
-greet("Hi", "Bob");
-</code></pre>
-              </div>
-            </div>
-            <blockquote class="fragment" data-fragment-index=2>"The function always evaluates the same result value given the same argument value(s)."</blockquote>
-          </section>
-          <section>
-            <h3>Side-Effects</h3>
-          </section>
-          <section>
-            <div class="flex-container">
-              <div class="flex-column">
-                <h3 class="fragment" data-fragment-index=1>Side-Effects</h3>
-<pre><code data-trim class='js'>
-var greeting_counter = 0;
-
-function greet(name) {
-  greeting_counter++;
-  return 'Hello ' + name;
-}
-
-greet("Bob");
-</code></pre>
-              </div>
-              <div class="flex-column">
-                <h3 class="fragment" data-fragment-index=1>Side-Effect Free</h3>
-<pre><code data-trim class='js'>
-var greeting_counter = 0;
-
-function greet(name) {
-  return 'Hello ' + name;
-}
-
-greet("Bob");
-greeting_counter++;
-</code></pre>
-              </div>
-            </div>
-            <blockquote class="fragment" data-fragment-index=2>"A function or expression is said to have a side effect if it modifies some state outside its scope or has an observable interaction with its calling functions or the outside world besides returning a value."</blockquote>
-          </section>
-          <section>
-            <h3>Pure + Side-effect Free = Referential Transparency</h3>
-          </section>
-          <section>
-            <h3>Pure + Side-effect Free + Immutable Go Well Together</h3>
-            <p>Let's take 10 seconds to imagine testing a codebase that used pure, side-effect free, functions and immutable state.</p>
-          </section>
-        </section>
-        <section>
-          <section>
-            <h3>Back to Immutability:</h3>
-            <h3>What does it get us?</h3>
-          </section>
-          <section>
-            <h3>Immutable data structures are guaranteed thread safe</h3>
-            <p class="fragment">But Javascript is single threaded...</p>
-            <div class="flex-container">
-              <div class="flex-column">
-<pre><code data-trim class='c'>
-/* Thread 1 */
-printf("%s",my_string);
-</code></pre>
-              </div>
-              <div class="flex-column">
-                <div><img src="img/theoretical_string_immutable.png" alt="A immutated string in memory"></div>
-              </div>
-              <div class="flex-column">
-<pre><code data-trim class='c'>
-/* Thread 2 */
-strcpy(my_string_2,my_string);
-my_string_2[8] = 'c';
-my_string_2[9] = 'a';
-my_string_2[10] = 't';
-</code></pre>
-              </div>
-            </div>
-          </section>
-          <section>
-            <h3>Immutable data structures allow for non-halting garbage collection</h3>
-            <p class="fragment">But Javascript's GC is halting...</p>
-          </section>
-          <section>
-            <h3>Immutable data structures allow for efficient change detection</h3>
-            <p class="fragment">But... no wait, that's good!</p>
-          </section>
-        </section>
-        <section>
-          <section>
-            <h3>Immutability and change detection</h3>
-          </section>
-          <section>
-            <h3>Efficient change Detection is a hard problem</h3>
-            <p>I gave a previous talk on <a href="https://angular-monomorphism-talk.herokuapp.com/#/">monomorphic change detectors</a> in Angular</p>
-          </section>
-          <section>
-            <h3>Immutability replaces change detection with reference equality</h3>
-
-<pre><code data-trim class='js'>
-let state = { a: 1, b: 2, c: 3 };
-let savedState = state;
-
-state.a = 4
-
-console.log(savedState === state); //true
-</code></pre>
-
-<pre><code data-trim class='js'>
-let { Map } = require('immutable')
-let state = Map({ a: 1, b: 2, c: 3 })
-let updatedState = state.set('a', 4)
-
-console.log(updatedMap === originalMap); //false
-</code></pre>
-          </section>
-          <section>
-            <h3>In React - Pure Component</h3>
-<pre><code data-trim class='js'>
-// While rely on normal virtual DOM diffing
-class Greeting extends React.Component {
-  render() {
-    return <h1>Hello, {this.props.name}</h1>;
-  }
-}
-</code></pre>
-<pre><code data-trim class='js'>
-// Will perform shallow reference
-// equality in `shouldComponentUpdate()`
-class Greeting extends React.PureComponent {
-  render() {
-    return <h1>Hello, {this.props.name}</h1>;
-  }
-}
-</code></pre>
-          </section>
-          <section>
-            <h3>In Angular - onPush</h3>
-<pre><code data-trim class='js'>
-// Will rely on object value comparison
-@Component({
-  selector: 'greet',
-  template: '<h1>Hello, {{name}}</h1>',
+caches.open(CACHE_NAME).then(function(cache) {
+  cache.delete(url);
 })
-export class HeroDetailComponent {
-  @Input() name: String;
-}
-</code></pre>
-<pre><code data-trim class='js'>
-// Will perform shallow reference
-// equality checks
-@Component({
-  selector: 'greet',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  template: '<h1>Hello, {{name}}</h1>'},
-})
-export class HeroDetailComponent {
-  @Input() name: String;
-}
 </code></pre>
           </section>
           <section>
-            <h3>Cascading Effects</h3>
-            <div><img src="img/cd_tree_with_branch_skipped.png" alt="A modified change detection tree"></div>
-            <div class="source"><a href="https://blog.thoughtram.io/angular/2016/02/22/angular-2-change-detection-explained.html">Source</a></div>
+              <h3>How to know which url to delete? (postMessage)</h3>
+<pre><code data-trim class='js'>
+/* In app code */
+navigator.serviceWorker.controller.postMessage({ url: 'http://localhost:8080/api/timezone/America%2FEdmonton' });
+
+/* In service worker */
+self.addEventListener('message', function(event){
+  console.log(event.data.url);
+});
+</code></pre>
+          </section>
+          <section>
+            <h3>Demo</h3>
+            <h4>Branch: api-request-service-worker-one-way-communication</h4>
+          </section>
+          <section>
+            <h3>There was a lot of lag between the click and update</h3>
+            <p>We can send a message back when the service worker is ready</p>
+          </section>
+          <section>
+            <h3>Service Workers are one-to-many</h3>
+            <div><img src="img/service_worker_one_to_many.png" alt="One service worker, many tabs"></div>
+          </section>
+          <section>
+            <h3>Use a one-to-one message channel</h3>
+            <div><img src="img/message_channel_diagram.png" alt="Message channel drawing"></div>
+          </section>
+          <section>
+              <h3>Message Channel - App Code</h3>
+<pre><code data-trim class='js'>
+/* In app code */
+// Create a Message Channel
+const messageChannel = new MessageChannel();
+
+// Handler for recieving message reply from service worker
+messageChannel.port1.onmessage = (reply) => {
+  console.log(`Received reply: ${reply}`);
+};
+
+navigator.serviceWorker.controller.postMessage(
+  'Ping',
+  [messageChannel.port2],
+);
+</code></pre>
+          </section>
+          <section>
+              <h3>Message Channel - Service Worker Code</h3>
+<pre><code data-trim class='js'>
+self.addEventListener('message', function(event){
+  console.log(`Received message: ${event.data}`);
+  event.ports[0].postMessage('Pong');
+});
+</code></pre>
+          </section>
+          <section>
+              <h3>Message Channel - Using to delete cache key</h3>
+<pre><code data-trim class='js'>
+self.addEventListener('message', function(event){
+  console.log(`Removing entry from cache for resource url: '${event.data.url}'`)
+  caches.open(CACHE_NAME).then(function(cache) {
+    return cache.delete(event.data.url);
+  }).then(function() {
+    event.ports[0].postMessage('Removed cache entry successfully');
+  });
+});
+</code></pre>
+          </section>
+          <section>
+            <h3>Demo</h3>
+            <h4>Branch: api-request-service-worker-two-way-communication</h4>
           </section>
         </section>
         <section>
           <section>
-            <h3>But where's the beef?(Immutable.js)</h3>
+            <h2>But not all is sunshine and roses...</h2>
           </section>
           <section>
-            <h3>Without Immutable.js</h3>
-<pre><code data-trim class='js'>
-...
-// From https://redux.js.org/docs/basics/Reducers.html
-switch (action.type) {
-  case SET_VISIBILITY_FILTER:
-    return Object.assign({}, state, {
-      visibilityFilter: action.filter
-    })
-...
-</code></pre>
-            <blockquote class="fragment">"The Object.assign() method is used to copy
-              the values of all enumerable own properties
-              from one or more source objects to a target object."</blockquote>
+            <h2>Browser Support</h2>
+            <div><img src="img/current_browser_support.png" alt="Current browser support for service workers"></div>
+            <div class="source"><a href="https://developer.mozilla.org/en/docs/Web/API/Service_Worker_API#Browser_compatibility">Source</a></div>
           </section>
           <section>
-            <h3>With Immutable.js</h3>
-<pre><code data-trim class='js'>
-...
-// From https://redux.js.org/docs/basics/Reducers.html
-switch (action.type) {
-  case SET_VISIBILITY_FILTER:
-    return state.set('visibilityFilter', action.filter);
-    })
-...
-</code></pre>
-            <p>This is a little bit cleaner, but is that why we use it?</p>
+            <h2>Coming Soon...</h2>
+            <div><img src="img/coming_soon.png" alt="Future browser support for service workers"></div>
+            <div class="source"><a href="https://caniuse.com/#feat=serviceworkers">Source</a></div>
           </section>
           <section>
-            <h3>Shared Structure</h3>
-            <div><img src="img/linkedlist_immutable.png" alt="An example linked list"></div>
-            <div class="source"><a href="https://auth0.com/blog/intro-to-immutable-js/">Source</a></div>
+            <h2>Complicated lifecycle</h2>
+            <div><img src="img/lifecycle.png" alt="Service worker lifecycle"></div>
+            <div class="source"><a href="https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers">Source</a></div>
           </section>
           <section>
-            <h3>Trie(s)</h3>
-            <div class="flex-container">
-              <div class="flex-column">
-                <div><img src="img/keys_and_values.png" alt="A list of keys and values"></div>
-              </div>
-              <div class="flex-column">
-                <div><img src="img/key_value_trie.png" alt="Trie for a map"></div>
-                <div class="source"><a href="https://en.wikipedia.org/wiki/Trie">Source</a></div>
-              </div>
-              <div class="flex-column">
-                <div><img src="img/modified_trie.png" alt="Modified trie for a map"></div>
-                <div class="source"><a href="https://medium.com/@dtinth/immutable-js-persistent-data-structures-and-structural-sharing-6d163fbd73d2">Source</a></div>
-              </div>
-            </div>
-          </section>
-          <section>
-            <h3>Your Mileage May Vary</h3>
-            <div class="flex-container">
-              <div class="flex-column">
-                <div><img src="img/react_immutable_benchmark.png" alt="React immutable benchmark"></div>
-                <div class="source"><a href="https://auth0.com/blog/intro-to-immutable-js/">Source</a></div>
-              </div>
-              <div class="flex-column">
-                <blockquote>Premature optimization is the root of all evil -- Donald Knuth</blockquote>
-            </div>
+            <h2>Complicated lifecycle - Demos</h2>
+            <p>"Second time's a charm" - Won't activate until second load</p>
+            <p>"Ctrl-R Spam" - Reloads won't reload the service worker</p>
           </section>
         </section>
         <section>
           <section>
             <h3>What We covered</h3>
-            <p>&#10004;What immutable means</p>
-            <p>&#10004;Some related concepts (purity and side-effects)</p>
-            <p>&#10004;Benefits of using immutable structures</p>
-            <p>&#10004;What it looks like in React and Angular</p>
-          </section>
-          <section>
-            <h2>My Goal</h2>
-            <div class="flex-container">
-              <div class="flex-column fragment fade-out">
-                <h2>A</h2>
-                <p>Immutable.js will fundamentally change the way you write Javascript.</p>
-              </div>
-              <div class="flex-column">
-                <h2>B</h2>
-                <p>Immutable.js will, in some cases, be a useful tool to use for certain classes of problems.</p>
-              </div>
-            </div>
+            <p>&#10004;What service workers are</p>
+            <p>&#10004;Service workers for static content</p>
+            <p>&#10004;Service workers for dynamic content</p>
+            <p>&#10004;Challenges of working with service workers</p>
           </section>
           <section>
             <h3>Ben Zittlau</h2>
